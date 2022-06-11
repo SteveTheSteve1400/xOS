@@ -14,6 +14,7 @@
 lv_style_t buttonREL;
 lv_style_t buttonPR;
 lv_style_t imgBtn;
+lv_style_t meter;
 
 void InterfaceInit()
 {
@@ -22,34 +23,47 @@ void InterfaceInit()
   lv_theme_set_current(th);
 
 
-  //Set function callbacks for start page buttons
-  lv_btn_set_action(start, LV_BTN_ACTION_CLICK, Start);
 
   //Set function callbacks for main screen buttons
   lv_btn_set_action(sel1, LV_BTN_ACTION_CLICK, Auton);
+  lv_btn_set_action(sel2, LV_BTN_ACTION_CLICK, Motors);
   lv_btn_set_action(sel5, LV_BTN_ACTION_CLICK, Debug);
 
   //Set function callbacks for auton 1 buttons
   lv_btn_set_action(autonSel1, LV_BTN_ACTION_CLICK, Auton1);
+  for(auto &b : autonScr1)
+    lv_btn_set_action(b, LV_BTN_ACTION_CLICK, AutonNumber);
 
   //Set function callbacks for auton 2 buttons
   lv_btn_set_action(autonSel2, LV_BTN_ACTION_CLICK, Auton2);
+  for(auto &b : autonScr2)
+    lv_btn_set_action(b, LV_BTN_ACTION_CLICK, AutonNumber);
 
   //Set function callbacks for auton 3 buttons
   lv_btn_set_action(autonSel3, LV_BTN_ACTION_CLICK, Auton3);
 
-  //Style for normal buttons
-  lv_style_copy(&buttonREL, &lv_style_plain);
-  lv_color_t xBlueRel = LV_COLOR_MAKE(15, 207, 204);
-  buttonREL.body.main_color = xBlueRel;
-  buttonREL.body.radius = 0;
 
-  lv_style_copy(&buttonPR, &lv_style_plain);
-  lv_color_t xBluePR = LV_COLOR_MAKE(15, 103, 207);
-  buttonPR.body.main_color = xBluePR;
+  //Sets up temperature monitors
+  /*
+  lv_lmeter_set_range(lmeter, 0, 100);                   /*Set the range
+  lv_lmeter_set_value(lmeter, 100);                       /*Set the current value
+  lv_lmeter_set_scale(lmeter, 240, 21);                  /*Set the angle and number of lines
+  lv_obj_set_size(lmeter, 50, 50);
+  lv_obj_align(lmeter, NULL, LV_ALIGN_IN_TOP_LEFT, 25, 5);
+  lv_obj_set_hidden(motorBackdrop, true);
+  lv_obj_set_size(motorBackdrop, 100, 75);
+  lv_obj_set_pos(motorBackdrop, 0, 50);
+*/
 
-  lv_btn_set_style(start, LV_BTN_STYLE_REL, &buttonREL);
-  lv_btn_set_style(start, LV_BTN_STYLE_PR, &buttonPR);
+  //Style for temperature meters
+  lv_style_copy(&meter, &lv_style_plain);
+  meter.line.color = LV_COLOR_BLACK;
+  meter.line.width = 15;
+  meter.body.main_color = LV_COLOR_RED;
+  meter.body.grad_color = LV_COLOR_BLUE;
+
+  lv_lmeter_set_style(driveFLM, &meter);
+
 
   //Rickroll
   lv_img_set_src(rickRoll, "S:/usd/rickRoll.bin");
