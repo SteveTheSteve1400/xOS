@@ -1,4 +1,5 @@
 //#include "main.h"
+#include "display/lv_objx/lv_btn.h"
 #include "interface.h"
 
 typedef  FILE * pc_file_t;
@@ -54,6 +55,9 @@ static lv_fs_res_t pcfs_tell( void * file_p, uint32_t * pos_p)
     return LV_FS_RES_OK;
 }
 
+lv_obj_t * field = lv_img_create(lv_scr_act(), NULL);
+//image button
+lv_obj_t * btn = lv_imgbtn_create(lv_scr_act(), NULL);
 /**
  * A callback function for LLEMU's center button.
  *
@@ -67,8 +71,40 @@ static lv_fs_res_t pcfs_tell( void * file_p, uint32_t * pos_p)
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
+ lv_obj_t * createImgBtn(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, const char * title, bool isHidden, bool isRed, bool isBlue)
+{
+  //title = std::to_string(y).c_str();
+  lv_obj_t * btnTemp = lv_imgbtn_create(parent, NULL);
+  //lv_obj_align(btn, NULL, align, offsetX, offsetY);
+  lv_obj_set_pos(btnTemp, x, y);
+  lv_obj_set_hidden(btnTemp, isHidden);
+
+  lv_obj_t * label = lv_label_create(btnTemp, NULL);
+  lv_label_set_text(label, title);
+  lv_obj_align(label, NULL, LV_ALIGN_IN_LEFT_MID, 0, 5);
+  if(isRed){
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/redBtn.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/redBtn.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/redBtn.bin");
+  }
+  else if(isBlue){
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/blueBtn.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/blueBtn.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/blueBtn.bin");
+
+  }
+  else{
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/skillBtn.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/skillBtn.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/skillBtn.bin");
+  }
+  
+
+
+  return btnTemp;
+}
 void initialize() {
-	lv_fs_drv_t pcfs_drv;                         /*A driver descriptor*/
+  lv_fs_drv_t pcfs_drv;                         /*A driver descriptor*/
   memset(&pcfs_drv, 0, sizeof(lv_fs_drv_t));
 
   pcfs_drv.file_size = sizeof(pc_file_t);       /*Set up fields...*/
@@ -80,7 +116,9 @@ void initialize() {
   pcfs_drv.tell = pcfs_tell;
   lv_fs_add_drv(&pcfs_drv);
 
-  InterfaceInit();
+  lv_img_set_src(field, "S:/usd/field.bin");
+  lv_obj_t * blueFar = createImgBtn(lv_scr_act(), 37, 14,"Auton", false, false, true);
+
 	//pros::Task interface_task(InterfaceInit, 0, TASK_PRIORITY_DEFAULT);
 }
 
