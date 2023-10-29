@@ -57,7 +57,7 @@ static lv_fs_res_t pcfs_tell( void * file_p, uint32_t * pos_p)
 
 lv_obj_t * field = lv_img_create(lv_scr_act(), NULL);
 //image button
-lv_obj_t * btn = lv_imgbtn_create(lv_scr_act(), NULL);
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -71,7 +71,7 @@ lv_obj_t * btn = lv_imgbtn_create(lv_scr_act(), NULL);
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
- lv_obj_t * createImgBtn(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, const char * title, bool isHidden, bool isRed, bool isBlue)
+ lv_obj_t * createImgBtn(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, const char * title, bool isHidden, bool isRed, bool isBlue, bool close)
 {
   //title = std::to_string(y).c_str();
   lv_obj_t * btnTemp = lv_imgbtn_create(parent, NULL);
@@ -79,18 +79,26 @@ lv_obj_t * btn = lv_imgbtn_create(lv_scr_act(), NULL);
   lv_obj_set_pos(btnTemp, x, y);
   lv_obj_set_hidden(btnTemp, isHidden);
 
-  lv_obj_t * label = lv_label_create(btnTemp, NULL);
-  lv_label_set_text(label, title);
-  lv_obj_align(label, NULL, LV_ALIGN_IN_LEFT_MID, 0, 5);
-  if(isRed){
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/redBtn.bin");
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/redBtn.bin");
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/redBtn.bin");
+  if(isRed && close){
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/redClose.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/redClose.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/redClose.bin");
   }
-  else if(isBlue){
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/blueBtn.bin");
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/blueBtn.bin");
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/blueBtn.bin");
+  else if(isBlue && close){
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/blueClose.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/blueClose.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/blueClose.bin");
+
+  }
+  else if(isRed && !close){
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/redFar.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/redFar.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/red.bin");
+  }
+  else if(isBlue && !close){
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/blueFar.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/blueFar.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/blueFar.bin");
 
   }
   else{
@@ -117,7 +125,9 @@ void initialize() {
   lv_fs_add_drv(&pcfs_drv);
 
   lv_img_set_src(field, "S:/usd/field.bin");
-  lv_obj_t * blueFar = createImgBtn(lv_scr_act(), 37, 14,"Auton", false, false, true);
+  lv_obj_t * redClose = createImgBtn(lv_scr_act(), 0, -1,"Auton", false, true, false, true);
+  lv_obj_t * blueFar = createImgBtn(lv_scr_act(), 0, -1,"Auton", false, false, true, false);
+
 
 	//pros::Task interface_task(InterfaceInit, 0, TASK_PRIORITY_DEFAULT);
 }
