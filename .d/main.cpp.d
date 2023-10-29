@@ -1,6 +1,5 @@
-bin/main.cpp.o: src/main.cpp include/display/lv_objx/lv_btn.h \
+bin/main.cpp.o: src/main.cpp include/display/lv_core/lv_obj.h \
  include/display/lv_conf.h include/display/lv_conf_checker.h \
- include/display/lv_objx/lv_cont.h include/display/lv_core/lv_obj.h \
  include/display/lv_core/lv_style.h include/display/lv_misc/lv_color.h \
  include/display/lv_misc/lv_area.h include/display/lv_misc/lv_font.h \
  include/display/lv_misc/lv_symbol_def.h \
@@ -8,6 +7,7 @@ bin/main.cpp.o: src/main.cpp include/display/lv_objx/lv_btn.h \
  include/display/lv_misc/lv_anim.h include/display/lv_misc/lv_mem.h \
  include/display/lv_misc/lv_log.h include/display/lv_misc/lv_ll.h \
  include/display/lv_misc/lv_mem.h include/display/lv_misc/lv_log.h \
+ include/display/lv_objx/lv_btn.h include/display/lv_objx/lv_cont.h \
  include/display/lv_core/lv_indev.h include/display/lv_core/lv_obj.h \
  include/display/lv_hal/lv_hal_indev.h include/display/lv_hal/lv_hal.h \
  include/display/lv_hal/lv_hal_disp.h \
@@ -82,11 +82,9 @@ bin/main.cpp.o: src/main.cpp include/display/lv_objx/lv_btn.h \
  include/display/lv_themes/lv_theme_night.h \
  include/display/lv_themes/lv_theme_mono.h \
  include/display/lv_themes/lv_theme_zen.h
-include/display/lv_objx/lv_btn.h:
+include/display/lv_core/lv_obj.h:
 include/display/lv_conf.h:
 include/display/lv_conf_checker.h:
-include/display/lv_objx/lv_cont.h:
-include/display/lv_core/lv_obj.h:
 include/display/lv_core/lv_style.h:
 include/display/lv_misc/lv_color.h:
 include/display/lv_misc/lv_area.h:
@@ -99,6 +97,8 @@ include/display/lv_misc/lv_log.h:
 include/display/lv_misc/lv_ll.h:
 include/display/lv_misc/lv_mem.h:
 include/display/lv_misc/lv_log.h:
+include/display/lv_objx/lv_btn.h:
+include/display/lv_objx/lv_cont.h:
 include/display/lv_core/lv_indev.h:
 include/display/lv_core/lv_obj.h:
 include/display/lv_hal/lv_hal_indev.h:

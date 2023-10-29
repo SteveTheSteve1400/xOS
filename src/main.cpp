@@ -1,11 +1,14 @@
 //#include "main.h"
+#include "display/lv_core/lv_obj.h"
 #include "display/lv_objx/lv_btn.h"
 #include "interface.h"
 
 typedef  FILE * pc_file_t;
-
-static lv_fs_res_t pcfs_open( void * file_p, const char * fn, lv_fs_mode_t mode)
-{
+int autonFunc = 0;
+lv_obj_t * autonCurrent = lv_label_create(lv_scr_act(), NULL);
+lv_obj_t * field = lv_img_create(lv_scr_act(), NULL);
+lv_obj_t * dropdown = lv_ddlist_create(lv_scr_act(), NULL);
+static lv_fs_res_t pcfs_open( void * file_p, const char * fn, lv_fs_mode_t mode){
     errno = 0;
     const char * flags = "";
     if(mode == LV_FS_MODE_WR) flags = "wb";
@@ -54,8 +57,44 @@ static lv_fs_res_t pcfs_tell( void * file_p, uint32_t * pos_p)
     *pos_p = ftell(*fp);
     return LV_FS_RES_OK;
 }
+lv_res_t btn_click_action(lv_obj_t * btn){
+  lv_obj_set_auto_realign(autonCurrent, true);
 
-lv_obj_t * field = lv_img_create(lv_scr_act(), NULL);
+  uint8_t id = lv_obj_get_free_num(btn); //id usefull when there are multiple buttons
+	if(id == 0){
+		autonFunc = 0;
+		lv_obj_align(autonCurrent, NULL, LV_ALIGN_IN_RIGHT_MID ,-30,0);
+		lv_label_set_text(autonCurrent, "Far Red");
+    lv_ddlist_set_options(dropdown, "Winpoint\n"
+                                      "Match");
+  }
+	else if(id == 1){
+		autonFunc = 1;
+    lv_obj_align(autonCurrent, NULL,  LV_ALIGN_IN_RIGHT_MID,-30,0);
+		lv_label_set_text(autonCurrent, "Far Blue");
+    lv_ddlist_set_options(dropdown, "Winpoint\n"
+                                    "Match");
+	}
+	else if(id == 2){
+
+		autonFunc = 2;
+    lv_obj_align(autonCurrent, NULL,  LV_ALIGN_IN_RIGHT_MID,-30,0);
+    lv_label_set_text(autonCurrent, "Close Blue");
+    lv_ddlist_set_options(dropdown, "Winpoint\n"
+                                    "Match");
+	}
+	else if(id == 3){
+		//lv_obj_del(autonCurrent);
+		autonFunc = 3;
+    lv_obj_align(autonCurrent, NULL,  LV_ALIGN_IN_RIGHT_MID,-30,0);
+		lv_label_set_text(autonCurrent, "Close Red");
+    lv_ddlist_set_options(dropdown, "Winpoint\n"
+                                    "Match\n"
+                                    "Skills");
+	}
+    return LV_RES_OK;
+}
+
 //image button
 
 /**
@@ -78,7 +117,7 @@ lv_obj_t * field = lv_img_create(lv_scr_act(), NULL);
   //lv_obj_align(btn, NULL, align, offsetX, offsetY);
   lv_obj_set_pos(btnTemp, x, y);
   lv_obj_set_hidden(btnTemp, isHidden);
-
+  lv_btn_set_action(btnTemp, LV_BTN_ACTION_CLICK, btn_click_action);
   if(isRed && close){
     lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/redClose.bin");
     lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/redClose.bin");
@@ -93,7 +132,7 @@ lv_obj_t * field = lv_img_create(lv_scr_act(), NULL);
   else if(isRed && !close){
     lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/redFar.bin");
     lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/redFar.bin");
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/red.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/redFar.bin");
   }
   else if(isBlue && !close){
     lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/blueFar.bin");
@@ -102,9 +141,9 @@ lv_obj_t * field = lv_img_create(lv_scr_act(), NULL);
 
   }
   else{
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/skillBtn.bin");
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/skillBtn.bin");
-    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/skillBtn.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_INA, "S:/usd/skills.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_PR, "S:/usd/skills.bin");
+    lv_imgbtn_set_src(btnTemp, LV_BTN_STATE_REL, "S:/usd/skills.bin");
   }
   
 
@@ -112,9 +151,12 @@ lv_obj_t * field = lv_img_create(lv_scr_act(), NULL);
   return btnTemp;
 }
 void initialize() {
+
+
+  lv_obj_align(dropdown, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, 10);
   lv_fs_drv_t pcfs_drv;                         /*A driver descriptor*/
   memset(&pcfs_drv, 0, sizeof(lv_fs_drv_t));
-
+  lv_label_set_text(autonCurrent, "");
   pcfs_drv.file_size = sizeof(pc_file_t);       /*Set up fields...*/
   pcfs_drv.letter = 'S';
   pcfs_drv.open = pcfs_open;
@@ -125,9 +167,17 @@ void initialize() {
   lv_fs_add_drv(&pcfs_drv);
 
   lv_img_set_src(field, "S:/usd/field.bin");
-  lv_obj_t * redClose = createImgBtn(lv_scr_act(), 0, -1,"Auton", false, true, false, true);
-  lv_obj_t * blueFar = createImgBtn(lv_scr_act(), 0, -1,"Auton", false, false, true, false);
-
+  lv_obj_t * redFar = createImgBtn(lv_scr_act(), 165, 160,"Auton", false, true, false, false);
+  lv_obj_set_free_num(redFar, 0);
+  lv_obj_t * blueFar = createImgBtn(lv_scr_act(), 5, 5,"Auton", false, false, true, false);
+  lv_obj_set_free_num(blueFar, 1);
+  lv_obj_t * blueClose = createImgBtn(lv_scr_act(), 165, 5,"Auton", false, false, true, true);
+  lv_obj_set_free_num(blueClose, 2);
+  lv_obj_t * redClose = createImgBtn(lv_scr_act(), 5, 160,"Auton", false, true, false, true);
+  lv_obj_set_free_num(redClose, 3);
+  //lv_obj_t * skills = createImgBtn(lv_scr_act(), 84, 85,"Auton", false, false, false, false);
+  //lv_obj_set_free_num(skills, 4);
+  
 
 	//pros::Task interface_task(InterfaceInit, 0, TASK_PRIORITY_DEFAULT);
 }
